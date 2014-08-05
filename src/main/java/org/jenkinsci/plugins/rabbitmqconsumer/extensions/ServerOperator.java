@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.rabbitmqconsumer.extensions;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
@@ -75,7 +76,11 @@ public abstract class ServerOperator extends ExtensionPoint {
     public static void fireOnCloseCompleted(RMQConnection rmqConnection) {
         LOGGER.entering("ServerOperator", "fireOnCloseCompleted");
         for (ServerOperator l : all()) {
-            l.OnCloseCompleted(rmqConnection.getServiceUri());
+            try {
+                l.OnCloseCompleted(rmqConnection.getServiceUri());
+            } catch (Exception ex) {
+                LOGGER.log(Level.WARNING, "Caught exception during OnCloseCompleted()", ex);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.rabbitmqconsumer.extensions;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import hudson.ExtensionList;
@@ -80,7 +81,11 @@ public abstract class MessageQueueListener implements ExtensionPoint {
         LOGGER.entering("MessageQueueListener", "fireOnReceive");
         for (MessageQueueListener l : all()) {
             if (appId.equals(l.getAppId())) {
-                l.onReceive(queueName, contentType, headers, body);
+                try {
+                    l.onReceive(queueName, contentType, headers, body);
+                } catch (Exception ex) {
+                    LOGGER.log(Level.WARNING, "Caught exception during calling onReceive()", ex);
+                }
             }
         }
     }
@@ -97,7 +102,11 @@ public abstract class MessageQueueListener implements ExtensionPoint {
         LOGGER.entering("MessageQueueListener", "fireOnBind");
         for (MessageQueueListener l : all()) {
             if (appIds.contains(l.getAppId())) {
-                l.onBind(queueName);
+                try {
+                    l.onBind(queueName);
+                } catch (Exception ex) {
+                    LOGGER.log(Level.WARNING, "Caught exception during calling onBind()", ex);
+                }
             }
         }
     }
@@ -114,7 +123,11 @@ public abstract class MessageQueueListener implements ExtensionPoint {
         LOGGER.entering("MessageQueueListener", "fireOnUnbind");
         for (MessageQueueListener l : all()) {
             if (appIds.contains(l.getAppId())) {
+                try {
                 l.onUnbind(queueName);
+                } catch (Exception ex) {
+                    LOGGER.log(Level.WARNING, "Caught exception during calling onUnbind()", ex);
+                }
             }
         }
     }
