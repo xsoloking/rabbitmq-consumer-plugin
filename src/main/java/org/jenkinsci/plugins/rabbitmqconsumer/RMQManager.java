@@ -80,12 +80,14 @@ public final class RMQManager implements RMQConnectionListener {
 
             if (enableConsumer) {
                 if (rmqConnection == null) {
-                    rmqConnection = new RMQConnection(uri, user, pass, watchdog);
-                    rmqConnection.addRMQConnectionListener(this);
+                    RMQConnection conn = new RMQConnection(uri, user, pass, watchdog);
+                    conn.addRMQConnectionListener(this);
                     try {
-                        rmqConnection.open();
+                        conn.open();
+                        rmqConnection = conn;
                     } catch (IOException e) {
                         LOGGER.log(Level.WARNING, "Cannot open connection.", e);
+                        conn.removeRMQConnectionListener(this);
                         return;
                     }
                 }
@@ -103,8 +105,8 @@ public final class RMQManager implements RMQConnectionListener {
         if (rmqConnection != null) {
             try {
                 rmqConnection.close();
-            } finally {
-                rmqConnection = null;
+            } catch(Exception ex) {
+                onCloseCompleted(rmqConnection);
             }
         }
     }
@@ -207,6 +209,7 @@ public final class RMQManager implements RMQConnectionListener {
         rmqConnection.removeRMQConnectionListener(this);
         ServerOperator.fireOnCloseCompleted(rmqConnection);
         statusOpen = false;
+        this.rmqConnection = null;
         if (closeLatch != null) {
             closeLatch.countDown();
         }

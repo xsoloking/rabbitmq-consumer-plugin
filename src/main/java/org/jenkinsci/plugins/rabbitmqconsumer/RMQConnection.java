@@ -230,8 +230,11 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
 
     /**
      * Close connection.
+     *
+     *
+     * @throws IOException throws if something error.
      */
-    public void close() {
+    public void close() throws IOException {
         try {
             closeRequested = true;
             ReconnectTimer timer = ReconnectTimer.get();
@@ -244,8 +247,10 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
         } catch (IOException e) {
             LOGGER.warning("Failed to close connection.");
             if (!(e.getCause() instanceof ShutdownSignalException)) {
+                notifyOnCloseCompleted();
                 connection = null;
             }
+            throw e;
         }
     }
 
