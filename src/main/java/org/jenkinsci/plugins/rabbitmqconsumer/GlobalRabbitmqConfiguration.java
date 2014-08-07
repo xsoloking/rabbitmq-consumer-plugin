@@ -16,6 +16,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.jenkinsci.plugins.rabbitmqconsumer.watchdog.ReconnectTimer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -48,6 +49,7 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
     private String serviceUri;
     private String userName;
     private Secret userPassword;
+    private long watchdogPeriod = ReconnectTimer.DEFAULT_RECCURENCE_TIME;
     private List<RabbitmqConsumeItem> consumeItems;
     private boolean enableDebug;
 
@@ -62,6 +64,8 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
      *            the username.
      * @param userPassword
      *            the password.
+     * @param watchdogPeriod
+     *            the period for watchdog in milliseconds.
      * @param consumeItems
      *            the list of consumer items.
      * @param enableDebug
@@ -69,12 +73,13 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
      */
     @DataBoundConstructor
     public GlobalRabbitmqConfiguration(boolean enableConsumer, String serviceUri,
-            String userName, Secret userPassword,
+            String userName, Secret userPassword, long watchdogPeriod,
             List<RabbitmqConsumeItem> consumeItems, boolean enableDebug) {
         this.enableConsumer = enableConsumer;
         this.serviceUri = StringUtils.strip(StringUtils.stripToNull(serviceUri), "/");
         this.userName = userName;
         this.userPassword = userPassword;
+        this.watchdogPeriod = watchdogPeriod;
         this.consumeItems = consumeItems;
         this.enableDebug = enableDebug;
     }
@@ -97,6 +102,11 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
             consumeItems.clear();
         }
         req.bindJSON(this, json);
+
+        ReconnectTimer timer = ReconnectTimer.get();
+        if (timer != null) {
+            timer.setRecurrencePeriod(watchdogPeriod);
+        }
 
         if (urlValidator.isValid(serviceUri)) {
             save();
@@ -206,6 +216,24 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
      */
     public void setUserPassword(String userPassword) {
         this.userPassword = Secret.fromString(userPassword);
+    }
+
+    /**
+     * Gets the period for watchdog.
+     *
+     * @return the period in milliseconds.
+     */
+    public long getWatchdogPeriod() {
+        return watchdogPeriod;
+    }
+
+    /**
+     * Sets the period for watchdog.
+     *
+     * @param watchdogPeriod the period in milliseconds.
+     */
+    public void setWatchdogPeriod(long watchdogPeriod) {
+        this.watchdogPeriod = watchdogPeriod;
     }
 
     /**

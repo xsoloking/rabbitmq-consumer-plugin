@@ -43,6 +43,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     private final String serviceUri;
     private final String userName;
     private final Secret userPassword;
+    private final long watchdogPeriod;
     private final ConnectionFactory factory;
     private Connection connection = null;
     private final Set<AbstractRMQChannel> rmqChannels = new CopyOnWriteArraySet<AbstractRMQChannel>();
@@ -54,11 +55,32 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
      *
      * @param serviceUri
      *            the URI for RabbitMQ service.
+     * @param userName
+     *            the name of user.
+     * @param userPassword
+     *            the password of user.
      */
     public RMQConnection(String serviceUri, String userName, Secret userPassword) {
+        this(serviceUri, userName, userPassword, 60000);
+    }
+
+    /**
+     * Creates instance with specified parameter.
+     *
+     * @param serviceUri
+     *            the URI for RabbitMQ service.
+     * @param userName
+     *            the name of user.
+     * @param userPassword
+     *            the password of user.
+     * @param watchdogPeriod
+     *            the period of watchdog in seconds.
+     */
+    public RMQConnection(String serviceUri, String userName, Secret userPassword, long watchdogPeriod) {
         this.serviceUri = serviceUri;
         this.userName = userName;
         this.userPassword = userPassword;
+        this.watchdogPeriod = watchdogPeriod;
         this.factory = new ConnectionFactory();
         this.factory.setConnectionTimeout(TIMEOUT_CONNECTION_MILLIS);
     }
@@ -190,7 +212,11 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
                 connection = factory.newConnection();
                 connection.addShutdownListener(this);
                 closeRequested = false;
-                ReconnectTimer.get().start();
+                ReconnectTimer timer = ReconnectTimer.get();
+                if (timer != null) {
+                    timer.setRecurrencePeriod(watchdogPeriod);
+                    timer.start();
+                }
                 notifyOnOpen();
             } catch (URISyntaxException e) {
                 throw new IOException(e);
@@ -208,7 +234,10 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     public void close() {
         try {
             closeRequested = true;
-            ReconnectTimer.get().stop();
+            ReconnectTimer timer = ReconnectTimer.get();
+            if (timer != null) {
+                timer.stop();
+            }
             if (connection != null) {
                 connection.close();
             }

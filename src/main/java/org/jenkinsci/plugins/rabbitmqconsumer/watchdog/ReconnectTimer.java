@@ -14,13 +14,14 @@ import hudson.model.AperiodicWork;
 @Extension
 public class ReconnectTimer extends AperiodicWork {
 
-    private static final long DEFAULT_RECCURENCE_TIME = 300000;
-    private static final long INITIAL_DELAY_TIME = 600000;
+    private static final long INITIAL_DELAY_TIME = 15000;
 
     private volatile boolean stopRequested;
     private volatile boolean updateChannelRequested;
     private long reccurencePeriod;
 
+    /* Default reccurence time */
+    public static final long DEFAULT_RECCURENCE_TIME = 60000;
     /**
      * Creates instance.
      */

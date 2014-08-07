@@ -43,6 +43,9 @@
     <f:entry title="${%Password}" field="userPassword">
       <f:password />
     </f:entry>
+    <f:entry title="${%Supervisory Period}" field="watchdogPeriod">
+      <f:textbox />
+    </f:entry>
     <f:validateButton title="${%Test Connection}" progress="${%Testing...}" method="testConnection" with="serviceUri,userName,userPassword" />
     <f:entry title="${%Queues}">
       <f:repeatable field="consumeItems">

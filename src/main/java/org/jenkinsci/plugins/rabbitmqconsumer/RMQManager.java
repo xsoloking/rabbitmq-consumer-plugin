@@ -57,6 +57,7 @@ public final class RMQManager implements RMQConnectionListener {
         String uri = conf.getServiceUri();
         String user = conf.getUserName();
         Secret pass = conf.getUserPassword();
+        long watchdog = conf.getWatchdogPeriod();
 
         boolean enableConsumer = conf.isEnableConsumer();
 
@@ -79,7 +80,7 @@ public final class RMQManager implements RMQConnectionListener {
 
             if (enableConsumer) {
                 if (rmqConnection == null) {
-                    rmqConnection = new RMQConnection(uri, user, pass);
+                    rmqConnection = new RMQConnection(uri, user, pass, watchdog);
                     rmqConnection.addRMQConnectionListener(this);
                     try {
                         rmqConnection.open();
