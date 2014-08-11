@@ -41,6 +41,7 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
      */
     public static final String CONTENT_NONE = "-";
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(GlobalRabbitmqConfiguration.class.getName());
     private static final String[] AMQP_SCHEMES = { "amqp", "amqps" };
     private final UrlValidator urlValidator = new UrlValidator(AMQP_SCHEMES, UrlValidator.ALLOW_LOCAL_URLS);

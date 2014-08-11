@@ -74,13 +74,6 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
     /**
      * @inheritDoc
      */
-    public boolean isOpen() {
-        return isOpenRMQChannel();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public void addListener(RMQChannelListener listener) {
         addRMQChannelListener(listener);
     }

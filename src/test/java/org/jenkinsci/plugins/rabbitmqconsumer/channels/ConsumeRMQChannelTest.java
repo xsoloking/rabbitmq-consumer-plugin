@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -57,14 +58,15 @@ public class ConsumeRMQChannelTest {
     }
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         new NonStrictExpectations() {{
             connection.createChannel(); result = new Mocks.ChannelMock().getMockInstance();
 
-            MessageQueueListener.fireOnBind((HashSet<String>) any, anyString);
+            MessageQueueListener.fireOnBind((Collection<String>) any, anyString);
             result = new Mocks.OnBindDelegation();
 
-            MessageQueueListener.fireOnUnbind((HashSet<String>) any, anyString);
+            MessageQueueListener.fireOnUnbind((Collection<String>) any, anyString);
             result = new Mocks.OnUnbindDelegation();
 
             MessageQueueListener.fireOnReceive(anyString,
@@ -106,6 +108,7 @@ public class ConsumeRMQChannelTest {
             assertThat("Unmatch consumed queue.", Mocks.responseArray.get(0), is("listener-1"));
             channel.close();
         } catch (Exception ex) {
+            ex.printStackTrace();
             fail(ex.toString());
         }
     }

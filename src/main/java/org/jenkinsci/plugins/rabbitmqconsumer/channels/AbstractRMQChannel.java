@@ -2,10 +2,11 @@ package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Set;
+import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
+import org.jenkinsci.plugins.rabbitmqconsumer.RMQState;
 import org.jenkinsci.plugins.rabbitmqconsumer.events.RMQChannelEvent;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.notifiers.RMQChannelNotifier;
@@ -25,7 +26,8 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     private static final Logger LOGGER = Logger.getLogger(AbstractRMQChannel.class.getName());
 
     protected Channel channel;
-    protected final Set<RMQChannelListener> rmqChannelListeners = new CopyOnWriteArraySet<RMQChannelListener>();
+    protected RMQState state = RMQState.DISCONNECTED;
+    protected final Collection<RMQChannelListener> rmqChannelListeners = new CopyOnWriteArraySet<RMQChannelListener>();
 
     /**
      * Creates instance with specified parameters.
@@ -37,6 +39,15 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     }
 
     /**
+     * Gets whether channel is opened.
+     *
+     * @return true if channel is already opened.
+     */
+    public boolean isOpen() {
+        return state == RMQState.CONNECTED;
+    }
+
+    /**
      * Open connection.
      *
      * @param connection
@@ -45,10 +56,15 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
      *             exception if channel cannot be created.
      */
     public void open(final Connection connection) throws IOException {
-        channel = connection.createChannel();
-        if (channel != null) {
-            channel.addShutdownListener(this);
-            notifyOnOpen();
+        if (state == RMQState.DISCONNECTED) {
+            channel = connection.createChannel();
+            if (channel != null) {
+                channel.addShutdownListener(this);
+                notifyOnOpen();
+            }
+            state = RMQState.CONNECTED;
+        } else {
+            LOGGER.warning("Channel is already opened or on close pending.");
         }
     }
 
@@ -67,16 +83,23 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
      * @throws IOException throws if something error.
      */
     public void close() throws IOException {
-        if (channel != null) {
-            try {
-                channel.close();
-            } catch (IOException ex) {
-                if (!(ex.getCause() instanceof ShutdownSignalException)) {
-                    notifyOnCloseCompleted();
-                    channel = null;
+        if (state == RMQState.CONNECTED) {
+            if (channel != null) {
+                try {
+                    state = RMQState.CLOSE_PENDING;
+                    channel.close();
+                } catch (IOException ex) {
+                    LOGGER.warning("Failed to close channel.");
+                    if (!(ex.getCause() instanceof ShutdownSignalException)) {
+                        state = RMQState.DISCONNECTED;
+                        notifyOnCloseCompleted();
+                        channel = null;
+                    }
+                    throw ex;
                 }
-                throw ex;
             }
+        } else {
+            LOGGER.warning("Channel is already closed or on close pending.");
         }
     }
 
@@ -103,11 +126,7 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
      * @return true if channel is already opened.
      */
     public boolean isOpenRMQChannel() {
-        if (channel != null) {
-            return channel.isOpen();
-        } else {
-            return false;
-        }
+        return channel.isOpen();
     }
 
     /**
@@ -148,6 +167,7 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
         if (shutdownSignalException != null && !shutdownSignalException.isInitiatedByApplication()) {
             LOGGER.warning(MessageFormat.format("RabbitMQ channel {0} was suddenly closed.", channel.getChannelNumber()));
         }
+        state = RMQState.DISCONNECTED;
         notifyOnCloseCompleted();
         channel = null;
     }

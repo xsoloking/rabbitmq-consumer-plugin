@@ -1,12 +1,13 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration;
+import org.jenkinsci.plugins.rabbitmqconsumer.RMQState;
 import org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.MessageQueueListener;
 
@@ -25,7 +26,7 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
 
     private static final Logger LOGGER = Logger.getLogger(ConsumeRMQChannel.class.getName());
 
-    protected final HashSet<String> appIds;
+    protected final Collection<String> appIds;
     private final String queueName;
     private volatile boolean consumeStarted = false;
 
@@ -39,7 +40,7 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
      * @param appIds
      *            the hashset of application id.
      */
-    public ConsumeRMQChannel(String queueName, HashSet<String> appIds) {
+    public ConsumeRMQChannel(String queueName, Collection<String> appIds) {
         this.appIds = appIds;
         this.queueName = queueName;
         this.debug = isEnableDebug();
@@ -50,7 +51,7 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
      *
      * @return the hashset of app ids.
      */
-    public HashSet<String> getAppIds() {
+    public Collection<String> getAppIds() {
         return appIds;
     }
 
@@ -67,12 +68,14 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
      * Starts consume.
      */
     public void consume() {
-        try {
-            channel.basicConsume(queueName, false, new MessageConsumer(channel));
-            consumeStarted = true;
-            MessageQueueListener.fireOnBind(appIds, queueName);
-        } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to start consumer: ", e);
+        if (state == RMQState.CONNECTED && channel != null) {
+            try {
+                channel.basicConsume(queueName, false, new MessageConsumer(channel));
+                consumeStarted = true;
+                MessageQueueListener.fireOnBind(appIds, queueName);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Failed to start consumer: ", e);
+            }
         }
     }
 

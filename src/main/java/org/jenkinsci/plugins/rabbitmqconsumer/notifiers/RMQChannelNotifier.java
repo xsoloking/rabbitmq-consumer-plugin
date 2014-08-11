@@ -5,14 +5,14 @@ import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
 
 /**
  * Notifier interface for {@link RMQChannel}.
- * 
+ *
  * @author rinrinne a.k.a. rin_ne
  */
 public interface RMQChannelNotifier {
 
     /**
      * Add {@link RMQChannelListener}.
-     * 
+     *
      * @param rmqChannelListener
      *            the listener.
      */
@@ -20,7 +20,7 @@ public interface RMQChannelNotifier {
 
     /**
      * Notify {@link RMQChannelListener}s.
-     * 
+     *
      * @param event
      *            the event.
      */
@@ -28,15 +28,15 @@ public interface RMQChannelNotifier {
 
     /**
      * Removes {@link RMQChannelListener}.
-     * 
+     *
      * @param rmqChannelListener
      *            the listener.
      */
     void removeRMQChannelListener(RMQChannelListener rmqChannelListener);
 
     /**
-     * Gets whether channel is opened.
-     * 
+     * Gets whether actual RabbitMQ channel is opened.
+     *
      * @return true if channel is already opened.
      */
     boolean isOpenRMQChannel();

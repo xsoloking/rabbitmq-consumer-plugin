@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.rabbitmqconsumer;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 import hudson.Extension;
@@ -139,7 +140,7 @@ public class RabbitmqConsumeItem extends AbstractDescribableImpl<RabbitmqConsume
          */
         public ListBoxModel doFillAppIdItems() {
             ListBoxModel items = new ListBoxModel();
-            HashSet<String> appIds = new HashSet<String>();
+            Collection<String> appIds = new HashSet<String>();
 
             for (MessageQueueListener l : MessageQueueListener.all()) {
                 appIds.add(l.getAppId());

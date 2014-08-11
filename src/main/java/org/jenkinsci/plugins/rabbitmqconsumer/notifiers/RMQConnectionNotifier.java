@@ -5,13 +5,13 @@ import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQConnectionListener;
 
 /**
  * Notifier interface for {@link RMQConnectionListener}.
- * 
+ *
  * @author rinrinne a.k.a. rin_ne
  */
 public interface RMQConnectionNotifier {
     /**
      * Add {@link RMQConnectionListener}.
-     * 
+     *
      * @param rmqShutdownListener
      *            the listener.
      */
@@ -19,7 +19,7 @@ public interface RMQConnectionNotifier {
 
     /**
      * Notify event for {@link RMQConnection}.
-     * 
+     *
      * @param event
      *            the event.
      */
@@ -27,15 +27,15 @@ public interface RMQConnectionNotifier {
 
     /**
      * Removes {@link RMQConnectionListener}.
-     * 
+     *
      * @param rmqShutdownListener
      *            the listener.
      */
     void removeRMQConnectionListener(RMQConnectionListener rmqShutdownListener);
 
     /**
-     * Gets whether connection is opened.
-     * 
+     * Gets whether actual RabbitMQ connection is opened.
+     *
      * @return true if connection is already opened.
      */
     boolean isOpenRMQConnection();

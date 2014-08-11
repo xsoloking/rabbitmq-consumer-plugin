@@ -2,12 +2,11 @@ package org.jenkinsci.plugins.rabbitmqconsumer;
 
 import static org.junit.Assert.*;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -93,7 +92,7 @@ public class RMQConnectionTest {
         try {
             conn.open();
             conn.updateChannels(items);
-            Set<ConsumeRMQChannel> channels = conn.getConsumeRMQChannels();
+            Collection<ConsumeRMQChannel> channels = conn.getConsumeRMQChannels();
             assertEquals(3, channels.size());
             for (ConsumeRMQChannel ch : channels) {
                 assertTrue(queueNameSet.contains(ch.getQueueName()));
@@ -120,7 +119,7 @@ public class RMQConnectionTest {
         items.add(new RabbitmqConsumeItem("app-3", "queue-3"));
 
         try {
-            Set<ConsumeRMQChannel> channels;
+            Collection<ConsumeRMQChannel> channels;
             conn.open();
             conn.updateChannels(items);
             channels = conn.getConsumeRMQChannels();
@@ -150,7 +149,7 @@ public class RMQConnectionTest {
         items.add(item);
 
         try {
-            Set<ConsumeRMQChannel> channels;
+            Collection<ConsumeRMQChannel> channels;
             conn.open();
             conn.updateChannels(items);
             channels = conn.getConsumeRMQChannels();
@@ -180,7 +179,7 @@ public class RMQConnectionTest {
         items.add(item3);
 
         try {
-            Set<ConsumeRMQChannel> channels;
+            Collection<ConsumeRMQChannel> channels;
             conn.open();
             conn.updateChannels(items);
             channels = conn.getConsumeRMQChannels();

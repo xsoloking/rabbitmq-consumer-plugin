@@ -3,8 +3,9 @@ package org.jenkinsci.plugins.rabbitmqconsumer;
 import hudson.util.Secret;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.text.MessageFormat;
-import java.util.Set;
+import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -80,18 +81,22 @@ public final class RMQManager implements RMQConnectionListener {
 
             if (enableConsumer) {
                 if (rmqConnection == null) {
-                    RMQConnection conn = new RMQConnection(uri, user, pass, watchdog);
-                    conn.addRMQConnectionListener(this);
+                    rmqConnection = new RMQConnection(uri, user, pass, watchdog);
+                    rmqConnection.addRMQConnectionListener(this);
                     try {
-                        conn.open();
-                        rmqConnection = conn;
+                        rmqConnection.open();
                     } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Cannot open connection.", e);
-                        conn.removeRMQConnectionListener(this);
-                        return;
+                        if (e.getCause() instanceof ConnectException) {
+                            LOGGER.warning("Cannot open connection: " + e.getCause().getMessage());
+                        } else {
+                            LOGGER.log(Level.WARNING, "Cannot open connection!", e);
+                        }
+                        rmqConnection.removeRMQConnectionListener(this);
+                        rmqConnection = null;
                     }
+                } else {
+                    rmqConnection.updateChannels(GlobalRabbitmqConfiguration.get().getConsumeItems());
                 }
-                rmqConnection.updateChannels(GlobalRabbitmqConfiguration.get().getConsumeItems());
             }
         } catch (InterruptedException e) {
             LOGGER.warning("Interrupted when waiting to close connection.");
@@ -102,8 +107,9 @@ public final class RMQManager implements RMQConnectionListener {
      * Shutdown connection.
      */
     public void shutdown() {
-        if (rmqConnection != null) {
+        if (rmqConnection != null && rmqConnection.isOpen()) {
             try {
+                statusOpen = false;
                 rmqConnection.close();
             } catch(Exception ex) {
                 onCloseCompleted(rmqConnection);
@@ -123,6 +129,7 @@ public final class RMQManager implements RMQConnectionListener {
                 closeLatch = new CountDownLatch(1);
                 shutdown();
                 if (!closeLatch.await(TIMEOUT_CLOSE, TimeUnit.MILLISECONDS)) {
+                    onCloseCompleted(rmqConnection);
                     throw new InterruptedException("Wait timeout");
                 }
             } finally {
@@ -148,11 +155,12 @@ public final class RMQManager implements RMQConnectionListener {
      * @return true if channel for specified queue is already established.
      */
     public boolean getChannelStatus(String queueName) {
-        if (rmqConnection == null) {
-            return false;
-        } else {
-            return rmqConnection.getConsumeChannelStatus(queueName);
+        if (statusOpen) {
+            if (rmqConnection != null && rmqConnection.isOpen()) {
+                return rmqConnection.getConsumeChannelStatus(queueName);
+            }
         }
+        return false;
     }
 
     /**
@@ -177,9 +185,13 @@ public final class RMQManager implements RMQConnectionListener {
      * @return instance.
      */
     public PublishRMQChannel getPublishChannel() {
-        Set<PublishRMQChannel> channels = rmqConnection.getPublishRMQChannels();
-        if (!channels.isEmpty()) {
-            return (PublishRMQChannel)(channels.toArray()[0]);
+        if (statusOpen) {
+            if (rmqConnection != null) {
+                Collection<PublishRMQChannel> channels = rmqConnection.getPublishRMQChannels();
+                if (!channels.isEmpty()) {
+                    return (PublishRMQChannel)(channels.toArray()[0]);
+                }
+            }
         }
         return null;
     }
@@ -190,11 +202,14 @@ public final class RMQManager implements RMQConnectionListener {
      *            the connection.
      */
     public void onOpen(RMQConnection rmqConnection) {
-        LOGGER.info(MessageFormat.format(
-                "Open RabbitMQ connection: {0}",
-                rmqConnection.getServiceUri()));
-        ServerOperator.fireOnOpen(rmqConnection);
-        statusOpen = true;
+        if (this.rmqConnection.equals(rmqConnection)) {
+            LOGGER.info(MessageFormat.format(
+                    "Open RabbitMQ connection: {0}",
+                    rmqConnection.getServiceUri()));
+            ServerOperator.fireOnOpen(rmqConnection);
+            rmqConnection.updateChannels(GlobalRabbitmqConfiguration.get().getConsumeItems());
+            statusOpen = true;
+        }
     }
 
     /**
@@ -203,15 +218,17 @@ public final class RMQManager implements RMQConnectionListener {
      *            the connection.
      */
     public void onCloseCompleted(RMQConnection rmqConnection) {
-        LOGGER.info(MessageFormat.format(
-                "Closed RabbitMQ connection: {0}",
-                rmqConnection.getServiceUri()));
-        rmqConnection.removeRMQConnectionListener(this);
-        ServerOperator.fireOnCloseCompleted(rmqConnection);
-        statusOpen = false;
-        this.rmqConnection = null;
-        if (closeLatch != null) {
-            closeLatch.countDown();
+        if (this.rmqConnection != null && this.rmqConnection.equals(rmqConnection)) {
+            this.rmqConnection = null;
+            LOGGER.info(MessageFormat.format(
+                    "Closed RabbitMQ connection: {0}",
+                    rmqConnection.getServiceUri()));
+            rmqConnection.removeRMQConnectionListener(this);
+            ServerOperator.fireOnCloseCompleted(rmqConnection);
+            statusOpen = false;
+            if (closeLatch != null) {
+                closeLatch.countDown();
+            }
         }
     }
 

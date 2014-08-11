@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.extensions;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,7 +98,7 @@ public abstract class MessageQueueListener implements ExtensionPoint {
      * @param queueName
      *            the queue name.
      */
-    public static void fireOnBind(HashSet<String> appIds, String queueName) {
+    public static void fireOnBind(Collection<String> appIds, String queueName) {
         LOGGER.entering("MessageQueueListener", "fireOnBind");
         for (MessageQueueListener l : all()) {
             if (appIds.contains(l.getAppId())) {
@@ -119,7 +119,7 @@ public abstract class MessageQueueListener implements ExtensionPoint {
      * @param queueName
      *            the queue name.
      */
-    public static void fireOnUnbind(HashSet<String> appIds, String queueName) {
+    public static void fireOnUnbind(Collection<String> appIds, String queueName) {
         LOGGER.entering("MessageQueueListener", "fireOnUnbind");
         for (MessageQueueListener l : all()) {
             if (appIds.contains(l.getAppId())) {
