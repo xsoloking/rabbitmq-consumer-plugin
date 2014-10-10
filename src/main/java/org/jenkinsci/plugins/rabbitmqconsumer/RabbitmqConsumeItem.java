@@ -3,8 +3,9 @@ package org.jenkinsci.plugins.rabbitmqconsumer;
 import java.util.Collection;
 import java.util.HashSet;
 
+import jenkins.model.Jenkins;
 import hudson.Extension;
-import hudson.model.AbstractDescribableImpl;
+import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -22,7 +23,7 @@ import com.rabbitmq.client.Channel;
  * @author rinrinne a.k.a. rin_ne
  *
  */
-public class RabbitmqConsumeItem extends AbstractDescribableImpl<RabbitmqConsumeItem> {
+public class RabbitmqConsumeItem implements Describable<RabbitmqConsumeItem> {
 
     /**
      * App ID for debug.
@@ -86,6 +87,12 @@ public class RabbitmqConsumeItem extends AbstractDescribableImpl<RabbitmqConsume
      */
     public final void setQueueName(String queueName) {
         this.queueName = queueName;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Descriptor<RabbitmqConsumeItem> getDescriptor() {
+        return Jenkins.getInstance().getDescriptorOrDie(getClass());
     }
 
     // CHECKSTYLE:OFF
