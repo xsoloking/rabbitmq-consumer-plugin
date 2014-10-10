@@ -1,7 +1,6 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.extensions;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import jenkins.model.Jenkins;
 import hudson.ExtensionList;

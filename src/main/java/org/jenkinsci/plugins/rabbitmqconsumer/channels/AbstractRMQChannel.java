@@ -1,7 +1,6 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 

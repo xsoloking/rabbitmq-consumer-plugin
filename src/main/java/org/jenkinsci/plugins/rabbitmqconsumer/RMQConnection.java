@@ -3,9 +3,6 @@ package org.jenkinsci.plugins.rabbitmqconsumer;
 import hudson.util.Secret;
 
 import java.io.IOException;
-//import java.net.URISyntaxException;
-//import java.security.GeneralSecurityException;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArraySet;

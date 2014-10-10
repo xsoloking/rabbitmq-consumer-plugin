@@ -4,7 +4,6 @@ import hudson.util.Secret;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
