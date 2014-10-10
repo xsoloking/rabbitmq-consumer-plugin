@@ -68,6 +68,6 @@ public class MessageLogger extends MessageQueueListener {
         } catch (UnsupportedEncodingException e) {
             msg = "<Unsupported Encoding>";
         }
-        LOGGER.info("Receive: (" + contentType + ") " + msg);
+        LOGGER.info("Receive: ({}) {}", contentType, msg);
     }
 }

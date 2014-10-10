@@ -87,7 +87,7 @@ public final class RMQManager implements RMQConnectionListener {
                         rmqConnection.open();
                     } catch (IOException e) {
                         if (e.getCause() instanceof ConnectException) {
-                            LOGGER.warn("Cannot open connection: " + e.getCause().getMessage());
+                            LOGGER.warn("Cannot open connection: {}", e.getCause().getMessage());
                         } else {
                             LOGGER.warn("Cannot open connection!", e);
                         }
@@ -203,9 +203,7 @@ public final class RMQManager implements RMQConnectionListener {
      */
     public void onOpen(RMQConnection rmqConnection) {
         if (this.rmqConnection.equals(rmqConnection)) {
-            LOGGER.info(MessageFormat.format(
-                    "Open RabbitMQ connection: {0}",
-                    rmqConnection.getServiceUri()));
+            LOGGER.info("Open RabbitMQ connection: {}", rmqConnection.getServiceUri());
             ServerOperator.fireOnOpen(rmqConnection);
             rmqConnection.updateChannels(GlobalRabbitmqConfiguration.get().getConsumeItems());
             statusOpen = true;
@@ -220,9 +218,7 @@ public final class RMQManager implements RMQConnectionListener {
     public void onCloseCompleted(RMQConnection rmqConnection) {
         if (this.rmqConnection != null && this.rmqConnection.equals(rmqConnection)) {
             this.rmqConnection = null;
-            LOGGER.info(MessageFormat.format(
-                    "Closed RabbitMQ connection: {0}",
-                    rmqConnection.getServiceUri()));
+            LOGGER.info("Closed RabbitMQ connection: {}",rmqConnection.getServiceUri());
             rmqConnection.removeRMQConnectionListener(this);
             ServerOperator.fireOnCloseCompleted(rmqConnection);
             statusOpen = false;

@@ -58,9 +58,7 @@ public abstract class ServerOperator extends ExtensionPoint {
                     l.OnOpen(ch, rmqConnection.getServiceUri());
                     ch.close();
                 } catch (Exception ex) {
-                    LOGGER.warn(MessageFormat.format(
-                            "Caught exception from {0}#OnOpen().",
-                            l.getClass().getSimpleName()));
+                    LOGGER.warn("Caught exception from {}#OnOpen().", l.getClass().getSimpleName());
                 }
             }
         }
