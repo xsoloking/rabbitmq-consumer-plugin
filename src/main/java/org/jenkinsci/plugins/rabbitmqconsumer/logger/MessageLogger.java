@@ -4,10 +4,11 @@ import hudson.Extension;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.MessageQueueListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extension for logging messages. This is debug purpose.
@@ -16,7 +17,7 @@ import org.jenkinsci.plugins.rabbitmqconsumer.extensions.MessageQueueListener;
  */
 @Extension
 public class MessageLogger extends MessageQueueListener {
-    private static final Logger LOGGER = Logger.getLogger(MessageLogger.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageLogger.class);
     private static final String PLUGIN_NAME = "Message Logger for debug";
 
     /**

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
@@ -21,6 +20,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.PossibleAuthenticationFailureException;
@@ -42,7 +43,7 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
     public static final String CONTENT_NONE = "-";
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = Logger.getLogger(GlobalRabbitmqConfiguration.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalRabbitmqConfiguration.class);
     private static final String[] AMQP_SCHEMES = { "amqp", "amqps" };
     private final UrlValidator urlValidator = new UrlValidator(AMQP_SCHEMES, UrlValidator.ALLOW_LOCAL_URLS);
 

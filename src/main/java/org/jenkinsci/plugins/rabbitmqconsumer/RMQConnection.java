@@ -9,8 +9,6 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.plugins.rabbitmqconsumer.channels.AbstractRMQChannel;
@@ -21,6 +19,8 @@ import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQConnectionListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.notifiers.RMQConnectionNotifier;
 import org.jenkinsci.plugins.rabbitmqconsumer.watchdog.ReconnectTimer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -37,7 +37,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
 
     private static final int TIMEOUT_CONNECTION_MILLIS = 30000;
 
-    private static final Logger LOGGER = Logger.getLogger(RMQConnection.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RMQConnection.class);
 
     private final String serviceUri;
     private final String userName;
@@ -104,7 +104,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
             try {
                 ch = connection.createChannel();
             } catch (Exception ex) {
-                LOGGER.warning("Cannot create channel.");
+                LOGGER.warn("Cannot create channel.");
             }
         }
         return ch;
@@ -251,7 +251,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
                 try {
                     connection.close();
                 } catch (IOException e) {
-                    LOGGER.warning("Failed to close connection.");
+                    LOGGER.warn("Failed to close connection.");
                     if (!(e.getCause() instanceof ShutdownSignalException)) {
                         state = RMQState.DISCONNECTED;
                         notifyOnCloseCompleted();
@@ -261,7 +261,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
                 }
             }
         } else {
-            LOGGER.warning("Connection is already closed.");
+            LOGGER.warn("Connection is already closed.");
         }
     }
 
@@ -312,7 +312,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
      */
     private void createNewConsumeChannels(Collection<String> uniqueQueueNames, Collection<RabbitmqConsumeItem> consumeItems) {
         if (state != RMQState.CONNECTED) {
-            LOGGER.warning("Cannot create channel because connection is not established.");
+            LOGGER.warn("Cannot create channel because connection is not established.");
             return;
         }
 
@@ -343,7 +343,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
                             ch.open(connection);
                             rmqChannels.add(ch);
                         } catch (IOException e) {
-                            LOGGER.log(Level.WARNING, MessageFormat.format(
+                            LOGGER.warn(MessageFormat.format(
                                     "Failed to open consume channel for {0}.",
                                     queueName), e);
                             ch.removeRMQChannelListener(this);
@@ -439,7 +439,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
                 pubch.open(connection);
                 rmqChannels.add(pubch);
             } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Failed to open publish channel.", e);
+                LOGGER.warn("Failed to open publish channel.", e);
             }
         }
     }
@@ -553,7 +553,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
      */
     public void shutdownCompleted(ShutdownSignalException shutdownSignalException) {
         if (shutdownSignalException != null && !shutdownSignalException.isInitiatedByApplication()) {
-            LOGGER.warning("RabbitMQ connection was suddenly disconnected.");
+            LOGGER.warn("RabbitMQ connection was suddenly disconnected.");
         }
         state = RMQState.DISCONNECTED;
         closeAllChannels();

@@ -6,13 +6,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.publishers.ExchangeType;
 import org.jenkinsci.plugins.rabbitmqconsumer.publishers.PublishChannel;
 import org.jenkinsci.plugins.rabbitmqconsumer.publishers.PublishResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.AMQP;
 
@@ -23,7 +23,7 @@ import com.rabbitmq.client.AMQP;
  */
 public class PublishRMQChannel extends AbstractRMQChannel implements PublishChannel {
 
-    private static final Logger LOGGER = Logger.getLogger(PublishRMQChannel.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublishRMQChannel.class);
     private final ExecutorService publishExecutor = Executors.newSingleThreadExecutor();
 
     /**
@@ -50,7 +50,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
         try {
             result = future.get();
         } catch (Exception e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
         }
         return result;
     }
@@ -66,7 +66,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
         try {
             result = future.get();
         } catch (Exception e) {
-            LOGGER.warning(e.getMessage());
+            LOGGER.warn(e.getMessage());
         }
         return result;
     }
@@ -124,7 +124,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
                         channel.basicPublish(exchangeName, routingKey, props, body);
                         return new PublishResult(true, "Published", exchangeName);
                     } catch (IOException e) {
-                        LOGGER.log(Level.WARNING, "Failed to publish message.", e);
+                        LOGGER.warn("Failed to publish message.", e);
                         return new PublishResult(false, "Failed to publish message.", exchangeName);
                     }
                 }

@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.logging.Logger;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.RMQState;
 import org.jenkinsci.plugins.rabbitmqconsumer.events.RMQChannelEvent;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.notifiers.RMQChannelNotifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -23,7 +24,7 @@ import com.rabbitmq.client.ShutdownSignalException;
  */
 public abstract class AbstractRMQChannel implements RMQChannelNotifier, ShutdownListener {
 
-    private static final Logger LOGGER = Logger.getLogger(AbstractRMQChannel.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRMQChannel.class);
 
     protected Channel channel;
     protected RMQState state = RMQState.DISCONNECTED;
@@ -64,7 +65,7 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
             }
             state = RMQState.CONNECTED;
         } else {
-            LOGGER.warning("Channel is already opened or on close pending.");
+            LOGGER.warn("Channel is already opened or on close pending.");
         }
     }
 
@@ -89,7 +90,7 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
                     state = RMQState.CLOSE_PENDING;
                     channel.close();
                 } catch (IOException ex) {
-                    LOGGER.warning("Failed to close channel.");
+                    LOGGER.warn("Failed to close channel.");
                     if (!(ex.getCause() instanceof ShutdownSignalException)) {
                         state = RMQState.DISCONNECTED;
                         notifyOnCloseCompleted();
@@ -99,7 +100,7 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
                 }
             }
         } else {
-            LOGGER.warning("Channel is already closed or on close pending.");
+            LOGGER.warn("Channel is already closed or on close pending.");
         }
     }
 
@@ -165,7 +166,7 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
      */
     public void shutdownCompleted(ShutdownSignalException shutdownSignalException) {
         if (shutdownSignalException != null && !shutdownSignalException.isInitiatedByApplication()) {
-            LOGGER.warning(MessageFormat.format("RabbitMQ channel {0} was suddenly closed.", channel.getChannelNumber()));
+            LOGGER.warn(MessageFormat.format("RabbitMQ channel {0} was suddenly closed.", channel.getChannelNumber()));
         }
         state = RMQState.DISCONNECTED;
         notifyOnCloseCompleted();

@@ -2,14 +2,14 @@ package org.jenkinsci.plugins.rabbitmqconsumer.extensions;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
 import hudson.ExtensionList;
 
 import org.apache.tools.ant.ExtensionPoint;
 import org.jenkinsci.plugins.rabbitmqconsumer.RMQConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.Channel;
 
@@ -20,7 +20,7 @@ import com.rabbitmq.client.Channel;
  */
 public abstract class ServerOperator extends ExtensionPoint {
 
-    private static final Logger LOGGER = Logger.getLogger(ServerOperator.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerOperator.class);
 
     /**
      * Calls when channel is opened.
@@ -50,7 +50,7 @@ public abstract class ServerOperator extends ExtensionPoint {
      * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public static void fireOnOpen(RMQConnection rmqConnection) {
-        LOGGER.entering("ServerOperator", "fireOnOpen");
+        LOGGER.trace("ServerOperator", "fireOnOpen");
         if (rmqConnection.getConnection() != null) {
             for (ServerOperator l : all()) {
                 try {
@@ -58,7 +58,7 @@ public abstract class ServerOperator extends ExtensionPoint {
                     l.OnOpen(ch, rmqConnection.getServiceUri());
                     ch.close();
                 } catch (Exception ex) {
-                    LOGGER.warning(MessageFormat.format(
+                    LOGGER.warn(MessageFormat.format(
                             "Caught exception from {0}#OnOpen().",
                             l.getClass().getSimpleName()));
                 }
@@ -74,12 +74,12 @@ public abstract class ServerOperator extends ExtensionPoint {
      * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public static void fireOnCloseCompleted(RMQConnection rmqConnection) {
-        LOGGER.entering("ServerOperator", "fireOnCloseCompleted");
+        LOGGER.trace("ServerOperator", "fireOnCloseCompleted");
         for (ServerOperator l : all()) {
             try {
                 l.OnCloseCompleted(rmqConnection.getServiceUri());
             } catch (Exception ex) {
-                LOGGER.log(Level.WARNING, "Caught exception during OnCloseCompleted()", ex);
+                LOGGER.warn("Caught exception during OnCloseCompleted()", ex);
             }
         }
     }

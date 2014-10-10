@@ -3,13 +3,13 @@ package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration;
 import org.jenkinsci.plugins.rabbitmqconsumer.RMQState;
 import org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.MessageQueueListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
@@ -24,7 +24,7 @@ import com.rabbitmq.client.AMQP.BasicProperties;
  */
 public class ConsumeRMQChannel extends AbstractRMQChannel {
 
-    private static final Logger LOGGER = Logger.getLogger(ConsumeRMQChannel.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConsumeRMQChannel.class);
 
     protected final Collection<String> appIds;
     private final String queueName;
@@ -74,7 +74,7 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
                 consumeStarted = true;
                 MessageQueueListener.fireOnBind(appIds, queueName);
             } catch (IOException e) {
-                LOGGER.log(Level.WARNING, "Failed to start consumer: ", e);
+                LOGGER.warn("Failed to start consumer: ", e);
             }
         }
     }
@@ -145,7 +145,7 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
             } catch (IOException e) {
                 throw e;
             } catch (RuntimeException e) {
-                LOGGER.log(Level.WARNING, "caught exception in delivery handler", e);
+                LOGGER.warn("caught exception in delivery handler", e);
             }
         }
     }

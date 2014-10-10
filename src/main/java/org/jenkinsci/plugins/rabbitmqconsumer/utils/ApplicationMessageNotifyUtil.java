@@ -3,11 +3,12 @@ package org.jenkinsci.plugins.rabbitmqconsumer.utils;
 import hudson.ExtensionList;
 
 import java.util.HashSet;
-import java.util.logging.Logger;
 
 import jenkins.model.Jenkins;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.ApplicationMessageListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to notify application message to listener.
@@ -16,7 +17,7 @@ import org.jenkinsci.plugins.rabbitmqconsumer.listeners.ApplicationMessageListen
  */
 @Deprecated
 public final class ApplicationMessageNotifyUtil {
-    private static final Logger LOGGER = Logger.getLogger(ApplicationMessageNotifyUtil.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationMessageNotifyUtil.class);
 
     /**
      * Constructor.
@@ -37,7 +38,7 @@ public final class ApplicationMessageNotifyUtil {
      */
     @Deprecated
     public static void fireOnReceive(HashSet<String> appIds, String queueName, String contentType, byte[] body) {
-        LOGGER.entering("DefaultApplicationMessageListener", "fireOnReceive");
+        LOGGER.trace("DefaultApplicationMessageListener", "fireOnReceive");
         for (ApplicationMessageListener l : getAllListeners()) {
             if (appIds.contains(l.getAppId())) {
                 l.onReceive(queueName, contentType, body);
@@ -55,7 +56,7 @@ public final class ApplicationMessageNotifyUtil {
      */
     @Deprecated
     public static void fireOnBind(HashSet<String> appIds, String queueName) {
-        LOGGER.entering("DefaultApplicationMessageListener", "fireOnBind");
+        LOGGER.trace("DefaultApplicationMessageListener", "fireOnBind");
         for (ApplicationMessageListener l : getAllListeners()) {
             if (appIds.contains(l.getAppId())) {
                 l.onBind(queueName);
@@ -73,7 +74,7 @@ public final class ApplicationMessageNotifyUtil {
      */
     @Deprecated
     public static void fireOnUnbind(HashSet<String> appIds, String queueName) {
-        LOGGER.entering("DefaultApplicationMessageListener", "fireOnUnbind");
+        LOGGER.trace("DefaultApplicationMessageListener", "fireOnUnbind");
         for (ApplicationMessageListener l : getAllListeners()) {
             if (appIds.contains(l.getAppId())) {
                 l.onUnbind(queueName);

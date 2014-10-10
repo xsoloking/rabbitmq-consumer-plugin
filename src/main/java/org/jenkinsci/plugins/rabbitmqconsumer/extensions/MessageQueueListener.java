@@ -2,8 +2,9 @@ package org.jenkinsci.plugins.rabbitmqconsumer.extensions;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import hudson.ExtensionList;
 import hudson.ExtensionPoint;
@@ -15,7 +16,7 @@ import jenkins.model.Jenkins;
  * @author rinrinne a.k.a. rin_ne
  */
 public abstract class MessageQueueListener implements ExtensionPoint {
-    private static final Logger LOGGER = Logger.getLogger(MessageQueueListener.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageQueueListener.class);
 
     /**
      * Gets name.
@@ -78,13 +79,13 @@ public abstract class MessageQueueListener implements ExtensionPoint {
             String contentType,
             Map<String, Object> headers,
             byte[] body) {
-        LOGGER.entering("MessageQueueListener", "fireOnReceive");
+        LOGGER.trace("MessageQueueListener", "fireOnReceive");
         for (MessageQueueListener l : all()) {
             if (appId.equals(l.getAppId())) {
                 try {
                     l.onReceive(queueName, contentType, headers, body);
                 } catch (Exception ex) {
-                    LOGGER.log(Level.WARNING, "Caught exception during calling onReceive()", ex);
+                    LOGGER.warn("Caught exception during calling onReceive()", ex);
                 }
             }
         }
@@ -99,13 +100,13 @@ public abstract class MessageQueueListener implements ExtensionPoint {
      *            the queue name.
      */
     public static void fireOnBind(Collection<String> appIds, String queueName) {
-        LOGGER.entering("MessageQueueListener", "fireOnBind");
+        LOGGER.trace("MessageQueueListener", "fireOnBind");
         for (MessageQueueListener l : all()) {
             if (appIds.contains(l.getAppId())) {
                 try {
                     l.onBind(queueName);
                 } catch (Exception ex) {
-                    LOGGER.log(Level.WARNING, "Caught exception during calling onBind()", ex);
+                    LOGGER.warn("Caught exception during calling onBind()", ex);
                 }
             }
         }
@@ -120,13 +121,13 @@ public abstract class MessageQueueListener implements ExtensionPoint {
      *            the queue name.
      */
     public static void fireOnUnbind(Collection<String> appIds, String queueName) {
-        LOGGER.entering("MessageQueueListener", "fireOnUnbind");
+        LOGGER.trace("MessageQueueListener", "fireOnUnbind");
         for (MessageQueueListener l : all()) {
             if (appIds.contains(l.getAppId())) {
                 try {
                 l.onUnbind(queueName);
                 } catch (Exception ex) {
-                    LOGGER.log(Level.WARNING, "Caught exception during calling onUnbind()", ex);
+                    LOGGER.warn("Caught exception during calling onUnbind()", ex);
                 }
             }
         }

@@ -8,12 +8,12 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.channels.PublishRMQChannel;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.ServerOperator;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQConnectionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.Channel;
 
@@ -34,7 +34,7 @@ public final class RMQManager implements RMQConnectionListener {
     }
 
     private static final long TIMEOUT_CLOSE = 300000;
-    private static final Logger LOGGER = Logger.getLogger(RMQManager.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RMQManager.class);
 
     private RMQConnection rmqConnection;
     private volatile boolean statusOpen = false;
@@ -87,9 +87,9 @@ public final class RMQManager implements RMQConnectionListener {
                         rmqConnection.open();
                     } catch (IOException e) {
                         if (e.getCause() instanceof ConnectException) {
-                            LOGGER.warning("Cannot open connection: " + e.getCause().getMessage());
+                            LOGGER.warn("Cannot open connection: " + e.getCause().getMessage());
                         } else {
-                            LOGGER.log(Level.WARNING, "Cannot open connection!", e);
+                            LOGGER.warn("Cannot open connection!", e);
                         }
                         rmqConnection.removeRMQConnectionListener(this);
                         rmqConnection = null;
@@ -99,7 +99,7 @@ public final class RMQManager implements RMQConnectionListener {
                 }
             }
         } catch (InterruptedException e) {
-            LOGGER.warning("Interrupted when waiting to close connection.");
+            LOGGER.warn("Interrupted when waiting to close connection.");
         }
     }
 

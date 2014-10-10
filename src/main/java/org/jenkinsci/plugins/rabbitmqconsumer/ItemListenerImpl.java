@@ -1,19 +1,20 @@
 package org.jenkinsci.plugins.rabbitmqconsumer;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import hudson.Extension;
 import hudson.model.listeners.ItemListener;
 
 /**
  * Implements of {@link ItemListener}.
- * 
+ *
  * @author rinrinne a.k.a. rin_ne
  */
 @Extension
 public class ItemListenerImpl extends ItemListener {
 
-    private static final Logger LOGGER = Logger.getLogger(ItemListenerImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemListenerImpl.class);
 
     private final RMQManager rmqManager;
 
@@ -40,7 +41,7 @@ public class ItemListenerImpl extends ItemListener {
 
     /**
      * Gets this extension's instance.
-     * 
+     *
      * @return the instance of this extension.
      */
     public static ItemListenerImpl get() {
