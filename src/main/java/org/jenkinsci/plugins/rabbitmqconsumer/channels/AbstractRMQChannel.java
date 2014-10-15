@@ -59,10 +59,10 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
         if (state == RMQState.DISCONNECTED) {
             channel = connection.createChannel();
             if (channel != null) {
+                state = RMQState.CONNECTED;
                 channel.addShutdownListener(this);
                 notifyOnOpen();
             }
-            state = RMQState.CONNECTED;
         } else {
             LOGGER.warn("Channel is already opened or on close pending.");
         }
