@@ -87,7 +87,7 @@ public class RabbitMQConsumer extends Plugin {
      *
      * @author rinrinne (rinrin.ne@gmail.com)
      */
-    @ExportedBean
+    @ExportedBean(defaultVisibility=2)
     public static final class QueueState {
 
         @Exported
