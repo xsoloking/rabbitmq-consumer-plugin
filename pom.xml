@@ -35,7 +35,7 @@
   <properties>
     <jmockit.version>1.5</jmockit.version>
     <junit.version>4.11</junit.version>
-    <amqp.client.version>3.2.2</amqp.client.version>
+    <amqp.client.version>3.4.1</amqp.client.version>
     <commons.validator.version>1.4.0</commons.validator.version>
     <commons.lang3.version>3.1</commons.lang3.version>
   </properties>
