@@ -103,6 +103,7 @@ public class ConsumeRMQChannelTest {
 
             Consumer consumer = Mocks.consumerPool.pop();
             consumer.handleDelivery("consumerTag", envelope, props, "Test message".getBytes());
+            Thread.sleep(2000);
 
             assertEquals("Unmatched response size", 1, Mocks.responseArray.size());
             assertThat("Unmatch consumed queue.", Mocks.responseArray.get(0), is("listener-1"));
