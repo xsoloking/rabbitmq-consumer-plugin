@@ -1,13 +1,8 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 
-import hudson.security.ACL;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration;
 import org.jenkinsci.plugins.rabbitmqconsumer.RMQState;
@@ -30,16 +25,12 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 public class ConsumeRMQChannel extends AbstractRMQChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsumeRMQChannel.class);
-    private static final int SHUTDOWN_TIMEOUT_SECOND = 10;
-    private static final int FORCE_SHUTDOWN_TIMEOUT_SECOND = 60;
 
     protected final Collection<String> appIds;
     private final String queueName;
     private volatile boolean consumeStarted = false;
 
     private final boolean debug;
-
-    private final ExecutorService systemService = Executors.newSingleThreadExecutor();
 
     /**
      * Creates instance with specified parameters.
@@ -129,22 +120,23 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
                 throws IOException {
 
             try {
+
                 long deliveryTag = envelope.getDeliveryTag();
                 String contentType = properties.getContentType();
                 Map<String, Object> headers = properties.getHeaders();
 
                 if (debug) {
                     if (appIds.contains(RabbitmqConsumeItem.DEBUG_APPID)) {
-                        systemService.execute(new MessageEventRunner(RabbitmqConsumeItem.DEBUG_APPID,
-                                queueName, contentType, headers, body));
+                        MessageQueueListener.fireOnReceive(RabbitmqConsumeItem.DEBUG_APPID,
+                                queueName, contentType, headers, body);
                     }
                 }
 
                 if (properties.getAppId() != null &&
                         !properties.getAppId().equals(RabbitmqConsumeItem.DEBUG_APPID)) {
                     if (appIds.contains(properties.getAppId())) {
-                        systemService.execute(new MessageEventRunner(properties.getAppId(),
-                                queueName, contentType, headers, body));
+                        MessageQueueListener.fireOnReceive(properties.getAppId(),
+                                queueName, contentType, headers, body);
                     }
                 }
 
@@ -159,48 +151,6 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
     }
 
     /**
-     * A class to perform message event.
-     *
-     * @author rinrinne a.k.a. rin_ne
-     */
-    public class MessageEventRunner implements Runnable {
-        private final String id;
-        private final String queueName;
-        private final String contentType;
-        private final Map<String, Object> headers;
-        private final byte[] body;
-
-        /**
-         * Default constructor.
-         *
-         * @param id
-         *      the id.
-         * @param queueName
-         *      the queue name.
-         * @param contentType
-         *      the content type.
-         * @param headers
-         *      the map of headers.
-         * @param body
-         *      the body.
-         */
-        public MessageEventRunner(String id, String queueName, String contentType,
-                Map<String, Object> headers, byte[] body) {
-            this.id = id;
-            this.queueName = queueName;
-            this.contentType = contentType;
-            this.headers = headers;
-            this.body = body;
-        }
-
-        @Override
-        public void run() {
-            ACL.impersonate(ACL.SYSTEM);
-            MessageQueueListener.fireOnReceive(id, queueName, contentType, headers, body);
-        }
-    }
-
-    /**
      * @inheritDoc
      * @param shutdownSignalException
      *            the exception.
@@ -209,26 +159,5 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
         consumeStarted = false;
         MessageQueueListener.fireOnUnbind(appIds, queueName);
         super.shutdownCompleted(shutdownSignalException);
-    }
-
-    /**
-     * Shutdown system service executor.
-     */
-    public void shutdownSystemService() {
-        systemService.shutdown(); // Disable new tasks from being submitted
-        try {
-            // Wait a while for existing tasks to terminate
-            if (!systemService.awaitTermination(SHUTDOWN_TIMEOUT_SECOND, TimeUnit.SECONDS)) {
-                systemService.shutdownNow(); // Cancel currently executing tasks
-                // Wait a while for tasks to respond to being cancelled
-                if (!systemService.awaitTermination(FORCE_SHUTDOWN_TIMEOUT_SECOND, TimeUnit.SECONDS))
-                    LOGGER.warn("System Service termination was timed out.");
-            }
-        } catch (InterruptedException ie) {
-            // (Re-)Cancel if current thread also interrupted
-            systemService.shutdownNow();
-            // Preserve interrupt status
-            Thread.currentThread().interrupt();
-        }
     }
 }
