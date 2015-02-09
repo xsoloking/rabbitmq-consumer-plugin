@@ -1,13 +1,9 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 
-import hudson.security.ACL;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 
-import org.acegisecurity.context.SecurityContext;
-import org.acegisecurity.context.SecurityContextHolder;
 import org.jenkinsci.plugins.rabbitmqconsumer.GlobalRabbitmqConfiguration;
 import org.jenkinsci.plugins.rabbitmqconsumer.RMQState;
 import org.jenkinsci.plugins.rabbitmqconsumer.RabbitmqConsumeItem;
@@ -123,7 +119,6 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
         public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties, byte[] body)
                 throws IOException {
 
-            SecurityContext old = ACL.impersonate(ACL.SYSTEM);
             try {
 
                 long deliveryTag = envelope.getDeliveryTag();
@@ -151,9 +146,6 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
                 throw e;
             } catch (RuntimeException e) {
                 LOGGER.warn("caught exception in delivery handler", e);
-            }
-            finally {
-                SecurityContextHolder.setContext(old);
             }
         }
     }
