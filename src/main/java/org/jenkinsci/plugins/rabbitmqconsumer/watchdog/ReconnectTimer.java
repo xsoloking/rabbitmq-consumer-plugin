@@ -14,14 +14,15 @@ import hudson.model.AperiodicWork;
 @Extension
 public class ReconnectTimer extends AperiodicWork {
 
-    private static final long INITIAL_DELAY_TIME = 15000;
-
-    private volatile boolean stopRequested;
-    private volatile boolean updateChannelRequested;
-    private long reccurencePeriod;
-
     /* Default reccurence time */
     public static final long DEFAULT_RECCURENCE_TIME = 60000;
+
+    private static final long INITIAL_DELAY_TIME = 15000;
+
+    private volatile boolean stopRequested = false;
+    private volatile boolean updateChannelRequested = false;
+    private long reccurencePeriod = DEFAULT_RECCURENCE_TIME;
+
     /**
      * Creates instance.
      */
@@ -80,17 +81,25 @@ public class ReconnectTimer extends AperiodicWork {
         if (!stopRequested) {
             RMQManager manager = RMQManager.getInstance();
             GlobalRabbitmqConfiguration config = GlobalRabbitmqConfiguration.get();
+            ConnectionMonitor monitor = ConnectionMonitor.get();
 
             if (config.isEnableConsumer()) {
                 if (!manager.isOpen()) {
                     logger.info("watchdog: Reconnect requesting..");
+                    monitor.setActivate(true);
                     RMQManager.getInstance().update();
                     updateChannelRequested = false;
-                } else if (updateChannelRequested) {
-                    logger.info("watchdog: channel update requesting..");
-                    RMQManager.getInstance().update();
-                    updateChannelRequested = false;
+                } else {
+                    if (updateChannelRequested) {
+                        logger.info("watchdog: channel update requesting..");
+                        RMQManager.getInstance().update();
+                        updateChannelRequested = false;
+                    }
+                    monitor.setActivate(false);
+                    monitor.setLastMeanTime(System.currentTimeMillis());
                 }
+            } else {
+                monitor.setActivate(false);
             }
         }
     }

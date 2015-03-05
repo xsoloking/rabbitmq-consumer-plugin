@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.jenkinsci.plugins.rabbitmqconsumer.channels.PublishRMQChannel;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.ServerOperator;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQConnectionListener;
+import org.jenkinsci.plugins.rabbitmqconsumer.watchdog.ConnectionMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,6 +204,8 @@ public final class RMQManager implements RMQConnectionListener {
     public void onOpen(RMQConnection rmqConnection) {
         if (this.rmqConnection.equals(rmqConnection)) {
             LOGGER.info("Open RabbitMQ connection: {}", rmqConnection.getServiceUri());
+            ConnectionMonitor.get().setActivate(false);
+            ConnectionMonitor.get().setLastMeanTime(System.currentTimeMillis());
             ServerOperator.fireOnOpen(rmqConnection);
             rmqConnection.updateChannels(GlobalRabbitmqConfiguration.get().getConsumeItems());
             statusOpen = true;

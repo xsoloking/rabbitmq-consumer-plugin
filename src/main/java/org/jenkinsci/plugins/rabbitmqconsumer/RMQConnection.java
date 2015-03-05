@@ -15,6 +15,7 @@ import org.jenkinsci.plugins.rabbitmqconsumer.events.RMQConnectionEvent;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQConnectionListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.notifiers.RMQConnectionNotifier;
+import org.jenkinsci.plugins.rabbitmqconsumer.watchdog.ConnectionMonitor;
 import org.jenkinsci.plugins.rabbitmqconsumer.watchdog.ReconnectTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -224,7 +225,6 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
             ReconnectTimer timer = ReconnectTimer.get();
             if (timer != null) {
                 timer.setRecurrencePeriod(watchdogPeriod);
-                timer.start();
             }
         } else {
             throw new IOException("Connection is already opened.");
@@ -240,10 +240,6 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     public void close() throws IOException {
         if (state == RMQState.CONNECTED) {
             state = RMQState.CLOSE_PENDING;
-            ReconnectTimer timer = ReconnectTimer.get();
-            if (timer != null) {
-                timer.stop();
-            }
             if (connection != null) {
                 try {
                     connection.close();
@@ -546,6 +542,7 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     public void shutdownCompleted(ShutdownSignalException shutdownSignalException) {
         if (shutdownSignalException != null && !shutdownSignalException.isInitiatedByApplication()) {
             LOGGER.warn("RabbitMQ connection was suddenly disconnected.");
+            ConnectionMonitor.get().setActivate(true);
         }
         state = RMQState.DISCONNECTED;
         closeAllChannels();

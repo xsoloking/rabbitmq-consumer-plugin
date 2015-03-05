@@ -25,6 +25,9 @@ public class ReconnectTimerTest {
     @Mocked
     GlobalRabbitmqConfiguration config;
 
+    @Mocked
+    ConnectionMonitor monitor;
+
     ReconnectTimer timer = new ReconnectTimer();
 
     @Before
@@ -32,6 +35,7 @@ public class ReconnectTimerTest {
         new NonStrictExpectations() {{
             RMQManager.getInstance(); result = manager;
             GlobalRabbitmqConfiguration.get(); result = config;
+            ConnectionMonitor.get(); result = monitor;
         }};
     }
 
