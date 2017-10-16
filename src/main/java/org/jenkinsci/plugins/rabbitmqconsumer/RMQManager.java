@@ -195,7 +195,8 @@ public final class RMQManager implements RMQConnectionListener {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqConnection
      *            the connection.
      */
@@ -211,7 +212,8 @@ public final class RMQManager implements RMQConnectionListener {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqConnection
      *            the connection.
      */

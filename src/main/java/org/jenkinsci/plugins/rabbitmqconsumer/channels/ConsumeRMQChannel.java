@@ -151,7 +151,8 @@ public class ConsumeRMQChannel extends AbstractRMQChannel {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param shutdownSignalException
      *            the exception.
      */

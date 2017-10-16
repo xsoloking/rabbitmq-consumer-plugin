@@ -437,7 +437,8 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqChannel
      *            the channel.
      */
@@ -455,7 +456,8 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqChannel
      *            the channel.
      */
@@ -480,7 +482,8 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqConnectionListener
      *            the connection listener.
      */
@@ -489,7 +492,8 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqConnectionListener
      *            the connection listener.
      */
@@ -498,7 +502,8 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @return true if connection is already established.
      */
     public boolean isOpenRMQConnection() {
@@ -506,7 +511,8 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param event
      *            the event for connection.
      */
@@ -535,7 +541,8 @@ public class RMQConnection implements ShutdownListener, RMQChannelListener, RMQC
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param shutdownSignalException
      *            the exception.
      */

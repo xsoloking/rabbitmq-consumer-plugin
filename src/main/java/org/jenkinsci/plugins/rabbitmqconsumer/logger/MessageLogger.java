@@ -21,7 +21,8 @@ public class MessageLogger extends MessageQueueListener {
     private static final String PLUGIN_NAME = "Message Logger for debug";
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @return the name.
      */
     public String getName() {
@@ -29,7 +30,8 @@ public class MessageLogger extends MessageQueueListener {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @return the application id.
      */
     public String getAppId() {
@@ -37,7 +39,8 @@ public class MessageLogger extends MessageQueueListener {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param queueName
      *            the queue name that bind to.
      */
@@ -46,7 +49,8 @@ public class MessageLogger extends MessageQueueListener {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param queueName
      *            the queue name that unbind from.
      */
@@ -55,7 +59,8 @@ public class MessageLogger extends MessageQueueListener {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param queueName
      *            the queue name that receive from.
      * @param contentType

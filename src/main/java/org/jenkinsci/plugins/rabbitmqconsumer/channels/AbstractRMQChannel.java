@@ -101,7 +101,8 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqChannelListener
      *            the channel listener.
      */
@@ -110,7 +111,8 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param rmqChannelListener
      *            the channel listener.
      */
@@ -119,7 +121,8 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @return true if channel is already opened.
      */
     public boolean isOpenRMQChannel() {
@@ -127,7 +130,8 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param event
      *            the event for channel.
      */
@@ -156,7 +160,8 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param shutdownSignalException
      *            the exception.
      */

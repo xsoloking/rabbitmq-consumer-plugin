@@ -35,7 +35,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public Future<PublishResult> publish(String exchangeName, String routingKey,
             AMQP.BasicProperties props, byte[] body) {
@@ -43,7 +43,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public PublishResult setupExchange(String exchangeName, String queueName) {
         Future<PublishResult> future = publishExecutor.submit(
@@ -58,7 +58,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public PublishResult setupExchange(String exchangeName, String queueName,
             ExchangeType exchangeType, String routingKey) {
@@ -74,14 +74,14 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void addListener(RMQChannelListener listener) {
         addRMQChannelListener(listener);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void removeListener(RMQChannelListener listener) {
         removeRMQChannelListener(listener);
@@ -117,7 +117,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
         }
 
         /**
-         * @inheritDoc
+         * {@inheritDoc}
          */
         public PublishResult call() throws Exception {
             if (channel != null && channel.isOpen()) {
@@ -161,7 +161,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
         }
 
         /**
-         * @inheritDoc
+         * {@inheritDoc}
          */
         public PublishResult call() throws Exception {
             if (channel != null && channel.isOpen()) {
