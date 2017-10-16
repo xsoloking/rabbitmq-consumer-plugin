@@ -44,9 +44,12 @@ public class MessagePublisher {
      * @return the instance of this class.
      */
     public static MessagePublisher get() {
-        ExtensionList<MessagePublisher> extensions = Jenkins.getInstance().getExtensionList(MessagePublisher.class);
-        if (extensions != null && extensions.size() > 0) {
-            return extensions.get(0);
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            ExtensionList<MessagePublisher> extensions = jenkins.getExtensionList(MessagePublisher.class);
+            if (extensions != null && extensions.size() > 0) {
+                return extensions.get(0);
+            }
         }
         return null;
     }

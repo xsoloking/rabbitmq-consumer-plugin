@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- NM_METHOD_NAMING_CONVENTION -->
+    <Match>
+        <Class name="org.jenkinsci.plugins.rabbitmqconsumer.extensions.ServerOperator" />
+        <Method name="OnCloseCompleted" />
+        <Bug pattern="NM_METHOD_NAMING_CONVENTION" />
+    </Match>
+    <Match>
+        <Class name="org.jenkinsci.plugins.rabbitmqconsumer.extensions.ServerOperator" />
+        <Method name="OnOpen" />
+        <Bug pattern="NM_METHOD_NAMING_CONVENTION" />
+    </Match>
+
+    <!-- IS2_INCONSISTENT_SYNC -->
+    <Match>
+        <Class name="org.jenkinsci.plugins.rabbitmqconsumer.RMQManager" />
+        <Field name="closeLatch" />
+        <Bug pattern="IS2_INCONSISTENT_SYNC" />
+    </Match>
+</FindBugsFilter>

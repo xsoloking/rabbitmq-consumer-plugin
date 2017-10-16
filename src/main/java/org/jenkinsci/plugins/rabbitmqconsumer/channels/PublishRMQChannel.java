@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -111,7 +113,7 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
             this.exchangeName = exchangeName;
             this.routingKey = routingKey;
             this.props = props;
-            this.body = body;
+            this.body = Arrays.copyOf(body, body.length);
         }
 
         /**

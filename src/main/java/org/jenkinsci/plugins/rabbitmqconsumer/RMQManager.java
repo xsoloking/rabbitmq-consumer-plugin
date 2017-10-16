@@ -73,10 +73,8 @@ public final class RMQManager implements RMQConnectionListener {
                     !uri.equals(rmqConnection.getServiceUri()) &&
                     !user.equals(rmqConnection.getUserName()) &&
                     !pass.equals(rmqConnection.getUserPassword())) {
-                if (rmqConnection != null) {
-                    shutdownWithWait();
-                    rmqConnection = null;
-                }
+                shutdownWithWait();
+                rmqConnection = null;
             }
 
             if (enableConsumer) {

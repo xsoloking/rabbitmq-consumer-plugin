@@ -92,7 +92,11 @@ public class RabbitmqConsumeItem implements Describable<RabbitmqConsumeItem> {
     @SuppressWarnings("unchecked")
     @Override
     public Descriptor<RabbitmqConsumeItem> getDescriptor() {
-        return Jenkins.getInstance().getDescriptorOrDie(getClass());
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            return jenkins.getDescriptorOrDie(getClass());
+        }
+        return null;
     }
 
     // CHECKSTYLE:OFF
