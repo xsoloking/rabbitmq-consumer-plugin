@@ -4,7 +4,7 @@ import org.jenkinsci.plugins.rabbitmqconsumer.events.RMQChannelEvent;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
 
 /**
- * Notifier interface for {@link RMQChannel}.
+ * Notifier interface for RabbitMQ Channel.
  *
  * @author rinrinne a.k.a. rin_ne
  */

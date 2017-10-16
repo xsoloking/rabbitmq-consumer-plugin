@@ -35,8 +35,8 @@ public abstract class ServerOperator extends ExtensionPoint {
      * Calls when channel is closed.
      * You must not hold given values from control channel.
      *
-     * @param controlChannel
-     *            the control channel.
+     * @param seviceUri
+     *            the service URI.
      * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public abstract void OnCloseCompleted(String seviceUri);
@@ -44,8 +44,8 @@ public abstract class ServerOperator extends ExtensionPoint {
     /**
      * Fires OnOpen event.
      *
-     * @param controlChannel
-     *            the control channel.
+     * @param rmqConnection
+     *            the RabbitMQ connection.
      * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public static void fireOnOpen(RMQConnection rmqConnection) {
@@ -66,8 +66,8 @@ public abstract class ServerOperator extends ExtensionPoint {
     /**
      * Fires OnCloseCompleted event.
      *
-     * @param controlChannel
-     *            the control channel.
+     * @param rmqConnection
+     *            the RabbitMQ connection.
      * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public static void fireOnCloseCompleted(RMQConnection rmqConnection) {

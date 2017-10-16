@@ -47,8 +47,10 @@ public interface ApplicationMessageListener {
      *
      * @param queueName
      *            the queue name.
-     * @param json
-     *            the content of message.
+     * @param contentType
+     *            the mime type of content
+     * @param body
+     *            the content body.
      */
     @Deprecated
     void onReceive(String queueName, String contentType, byte[] body);

@@ -1,8 +1,8 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.events;
 
 /**
- * Events for {@link RMQConnectionListener}.
- * 
+ * Events for {@link org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQConnectionListener}.
+ *
  * @author nobuhiro
  */
 public enum RMQConnectionEvent {

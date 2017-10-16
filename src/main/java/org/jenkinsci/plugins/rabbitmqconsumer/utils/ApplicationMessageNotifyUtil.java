@@ -33,8 +33,10 @@ public final class ApplicationMessageNotifyUtil {
      *            the hashset of application ids.
      * @param queueName
      *            the queue name.
-     * @param json
-     *            the json object.
+     * @param contentType
+     *            the type of content.
+     * @param body
+     *            the content body.
      */
     @Deprecated
     public static void fireOnReceive(HashSet<String> appIds, String queueName, String contentType, byte[] body) {

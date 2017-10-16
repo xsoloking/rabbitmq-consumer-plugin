@@ -18,7 +18,7 @@ public interface RMQConnectionNotifier {
     void addRMQConnectionListener(RMQConnectionListener rmqShutdownListener);
 
     /**
-     * Notify event for {@link RMQConnection}.
+     * Notify event for {@link org.jenkinsci.plugins.rabbitmqconsumer.RMQConnection}.
      *
      * @param event
      *            the event.

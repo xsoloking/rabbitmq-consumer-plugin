@@ -57,10 +57,12 @@ public abstract class MessageQueueListener implements ExtensionPoint {
      *
      * @param queueName
      *            the queue name.
+     * @param contentType
+     *            the type of content.
      * @param headers
      *            the map of headers.
-     * @param json
-     *            the content of message.
+     * @param body
+     *            the content body.
      */
     public abstract void onReceive(String queueName, String contentType, Map<String, Object> headers, byte[] body);
 

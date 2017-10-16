@@ -30,10 +30,7 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
     protected final Collection<RMQChannelListener> rmqChannelListeners = new CopyOnWriteArraySet<RMQChannelListener>();
 
     /**
-     * Creates instance with specified parameters.
-     *
-     * @param appIds
-     *            the hashset of application id.
+     * Default constructor.
      */
     public AbstractRMQChannel() {
     }

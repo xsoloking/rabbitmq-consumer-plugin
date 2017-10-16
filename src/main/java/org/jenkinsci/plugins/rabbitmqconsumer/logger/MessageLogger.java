@@ -58,8 +58,12 @@ public class MessageLogger extends MessageQueueListener {
      * @inheritDoc
      * @param queueName
      *            the queue name that receive from.
-     * @param json
-     *            the content of message.
+     * @param contentType
+     *            the type of content.
+     * @param headers
+     *            the map of message headers.
+     * @param body
+     *            the content body.
      */
     public void onReceive(String queueName, String contentType, Map<String, Object> headers, byte[] body) {
         String msg;
