@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import java.nio.StandardCharsets
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,7 +12,6 @@ import java.util.Map;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
 
-import org.apache.commons.codec.CharEncoding;
 import org.jenkinsci.plugins.rabbitmqconsumer.Mocks;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.MessageQueueListener;
 import org.jenkinsci.plugins.rabbitmqconsumer.listeners.RMQChannelListener;
@@ -90,7 +90,7 @@ public class ConsumeRMQChannelTest {
 
         AMQP.BasicProperties.Builder builder = new AMQP.BasicProperties.Builder();
         builder.appId("app-1");
-        builder.contentEncoding(CharEncoding.UTF_8);
+        builder.contentEncoding(StandardCharsets.UTF_8.name());
         builder.contentType("application/json");
 
         AMQP.BasicProperties props = builder.build();
