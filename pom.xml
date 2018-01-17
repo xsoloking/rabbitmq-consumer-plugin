@@ -3,7 +3,8 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>2.11</version><!-- which version of Jenkins is this plugin built against? -->
+    <version>3.2</version><!-- which version of Jenkins is this plugin built against? -->
+    <relativePath />
   </parent>
 
   <artifactId>rabbitmq-consumer</artifactId>
@@ -18,7 +19,7 @@
       <name>MIT</name>
       <url>http://www.opensource.org/licenses/mit-license.php</url>
       <comments>
-        Copyright 2013 rinrinne a.k.a. rin_ne. All rights reserved.
+        Copyright 2013-2018 rinrinne a.k.a. rin_ne. All rights reserved.
       </comments>
     </license>
   </licenses>
@@ -39,29 +40,23 @@
     <java.level>7</java.level>
     <!-- Jenkins Test Harness version you use to test the plugin. -->
     <!-- For Jenkins version >= 1.580.1 use JTH 2.x or higher. -->
-    <jenkins-test-harness.version>2.13</jenkins-test-harness.version>
+    <!-- <jenkins-test-harness.version>2.13</jenkins-test-harness.version> -->
     <!-- Other properties you may want to use:
         ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
         ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
     -->
-    <jmockit.version>1.5</jmockit.version>
-    <junit.version>4.11</junit.version>
+    <jmockit.version>1.38</jmockit.version>
     <amqp.client.version>3.4.1</amqp.client.version>
-    <commons.validator.version>1.4.0</commons.validator.version>
-    <commons.lang3.version>3.1</commons.lang3.version>
+    <commons.validator.version>1.6</commons.validator.version>
+    <commons.digester.version>2.1</commons.digester.version>
+    <commons.lang3.version>3.7</commons.lang3.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.googlecode.jmockit</groupId>
+      <groupId>org.jmockit</groupId>
       <artifactId>jmockit</artifactId>
       <version>${jmockit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -74,6 +69,11 @@
       <artifactId>commons-validator</artifactId>
       <version>${commons.validator.version}</version>
     </dependency>
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>${commons.digester.version}</version>
+    </dependency>
 	  <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.7</version>
+      <version>${slf4jVersion}</version>
     </dependency>
   </dependencies>
 
