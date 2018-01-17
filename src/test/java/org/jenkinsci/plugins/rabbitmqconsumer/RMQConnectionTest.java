@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
+import mockit.Expectations;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.channels.ConsumeRMQChannel;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.MessageQueueListener;
@@ -59,16 +59,16 @@ public class RMQConnectionTest {
     @Before
     public void setUp() throws Exception {
 
-        new NonStrictExpectations() {{
+        new Expectations() {{
             connection.createChannel(); result = new Mocks.ChannelMock().getMockInstance();
-            MessageQueueListener.all();
+            MessageQueueListener.all(); minTimes = 0;
             factory.setConnectionTimeout(anyInt);
-            factory.setRequestedHeartbeat(anyInt);
+            factory.setRequestedHeartbeat(anyInt); minTimes = 0;
             factory.setUri(anyString);
             factory.newConnection(); result = connection;
             ReconnectTimer.get(); result = timer;
-            timer.start();
-            timer.stop();
+            timer.start(); minTimes = 0;
+            timer.stop(); minTimes = 0;
         }};
     }
 

@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins.rabbitmqconsumer.watchdog;
 
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
+import mockit.Expectations;
 
 import static org.junit.Assert.*;
 
@@ -32,10 +32,10 @@ public class ReconnectTimerTest {
 
     @Before
     public void setUp() throws Exception {
-        new NonStrictExpectations() {{
-            RMQManager.getInstance(); result = manager;
-            GlobalRabbitmqConfiguration.get(); result = config;
-            ConnectionMonitor.get(); result = monitor;
+        new Expectations() {{
+            RMQManager.getInstance(); result = manager; minTimes = 0;
+            GlobalRabbitmqConfiguration.get(); result = config; minTimes = 0;
+            ConnectionMonitor.get(); result = monitor; minTimes = 0;
         }};
     }
 
@@ -51,10 +51,10 @@ public class ReconnectTimerTest {
 
     @Test
     public void testIfAllGrean() {
-        new NonStrictExpectations() {{
-            manager.isOpen(); result = true;
-            config.isEnableConsumer(); result = true;
-            manager.update(); times = 0;
+        new Expectations() {{
+            manager.isOpen(); result = true; minTimes = 0;
+            config.isEnableConsumer(); result = true; minTimes = 0;
+            manager.update(); times = 0; minTimes = 0;
         }};
 
         timer.start();
@@ -64,10 +64,10 @@ public class ReconnectTimerTest {
 
     @Test
     public void testIfManagerIsClosed() {
-        new NonStrictExpectations() {{
-            manager.isOpen(); result = false;
-            config.isEnableConsumer(); result = true;
-            manager.update(); times = 1;
+        new Expectations() {{
+            manager.isOpen(); result = false; minTimes = 0;
+            config.isEnableConsumer(); result = true; minTimes = 0;
+            manager.update(); times = 1; minTimes = 0;
         }};
 
         timer.start();
@@ -77,10 +77,10 @@ public class ReconnectTimerTest {
 
     @Test
     public void testIfConsumerIsDisabled() {
-        new NonStrictExpectations() {{
-            manager.isOpen(); result = true;
-            config.isEnableConsumer(); result = false;
-            manager.update(); times = 0;
+        new Expectations() {{
+            manager.isOpen(); result = true; minTimes = 0;
+            config.isEnableConsumer(); result = false; minTimes = 0;
+            manager.update(); times = 0; minTimes = 0;
         }};
 
         timer.start();
@@ -90,10 +90,10 @@ public class ReconnectTimerTest {
 
     @Test
     public void testIfAllNegative() {
-        new NonStrictExpectations() {{
-            manager.isOpen(); result = false;
-            config.isEnableConsumer(); result = false;
-            manager.update(); times = 0;
+        new Expectations() {{
+            manager.isOpen(); result = false; minTimes = 0;
+            config.isEnableConsumer(); result = false; minTimes = 0;
+            manager.update(); times = 0; minTimes = 0;
         }};
 
         timer.start();
@@ -103,10 +103,10 @@ public class ReconnectTimerTest {
 
     @Test
     public void testDoAperiodicRunInShutdown() {
-        new NonStrictExpectations() {{
-            manager.isOpen(); result = false;
-            config.isEnableConsumer(); result = true;
-            manager.update(); times = 0;
+        new Expectations() {{
+            manager.isOpen(); result = false; minTimes = 0;
+            config.isEnableConsumer(); result = true; minTimes = 0;
+            manager.update(); times = 0; minTimes = 0;
         }};
 
         timer.stop();

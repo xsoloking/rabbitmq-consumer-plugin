@@ -3,14 +3,14 @@ package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-import java.nio.StandardCharsets
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
+import mockit.Expectations;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.Mocks;
 import org.jenkinsci.plugins.rabbitmqconsumer.extensions.MessageQueueListener;
@@ -60,7 +60,7 @@ public class ConsumeRMQChannelTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
-        new NonStrictExpectations() {{
+        new Expectations() {{
             connection.createChannel(); result = new Mocks.ChannelMock().getMockInstance();
 
             MessageQueueListener.fireOnBind((Collection<String>) any, anyString);
