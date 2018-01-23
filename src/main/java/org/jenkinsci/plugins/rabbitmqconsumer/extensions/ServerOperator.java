@@ -37,7 +37,6 @@ public abstract class ServerOperator extends ExtensionPoint {
      *
      * @param seviceUri
      *            the service URI.
-     * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public abstract void OnCloseCompleted(String seviceUri);
 
@@ -46,7 +45,6 @@ public abstract class ServerOperator extends ExtensionPoint {
      *
      * @param rmqConnection
      *            the RabbitMQ connection.
-     * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public static void fireOnOpen(RMQConnection rmqConnection) {
         LOGGER.trace("ServerOperator", "fireOnOpen");
@@ -68,7 +66,6 @@ public abstract class ServerOperator extends ExtensionPoint {
      *
      * @param rmqConnection
      *            the RabbitMQ connection.
-     * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public static void fireOnCloseCompleted(RMQConnection rmqConnection) {
         LOGGER.trace("ServerOperator", "fireOnCloseCompleted");
