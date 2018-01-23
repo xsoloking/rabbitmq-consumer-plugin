@@ -45,7 +45,7 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalRabbitmqConfiguration.class);
     private static final String[] AMQP_SCHEMES = { "amqp", "amqps" };
-    private final UrlValidator urlValidator = new UrlValidator(AMQP_SCHEMES, UrlValidator.ALLOW_LOCAL_URLS);
+    private static final UrlValidator URL_VALIDATOR = new UrlValidator(AMQP_SCHEMES, UrlValidator.ALLOW_LOCAL_URLS);
 
     private boolean enableConsumer;
     private String serviceUri;
@@ -110,7 +110,7 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
             timer.setRecurrencePeriod(watchdogPeriod);
         }
 
-        if (urlValidator.isValid(serviceUri)) {
+        if (URL_VALIDATOR.isValid(serviceUri)) {
             save();
             return true;
         }
@@ -251,7 +251,7 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
             return FormValidation.ok();
         }
 
-        if (urlValidator.isValid(val)) {
+        if (URL_VALIDATOR.isValid(val)) {
             return FormValidation.ok();
         } else {
             return FormValidation.error(Messages.InvalidURI());
@@ -275,7 +275,7 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
             @QueryParameter("userName") String userName,
             @QueryParameter("userPassword") Secret userPassword) throws ServletException {
         String uri = StringUtils.strip(StringUtils.stripToNull(serviceUri), "/");
-        if (uri != null && urlValidator.isValid(uri)) {
+        if (uri != null && URL_VALIDATOR.isValid(uri)) {
             try {
                 ConnectionFactory factory = new ConnectionFactory();
                 factory.setUri(uri);
