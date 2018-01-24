@@ -84,10 +84,6 @@ public abstract class ServerOperator extends ExtensionPoint {
      * @return the extension list.
      */
     public static ExtensionList<ServerOperator> all() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return jenkins.getExtensionList(ServerOperator.class);
-        }
-        return null;
+        return Jenkins.getInstance().getExtensionList(ServerOperator.class);
     }
 }

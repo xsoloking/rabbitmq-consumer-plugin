@@ -91,10 +91,6 @@ public final class ApplicationMessageNotifyUtil {
      */
     @Deprecated
     public static ExtensionList<ApplicationMessageListener> getAllListeners() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return jenkins.getExtensionList(ApplicationMessageListener.class);
-        }
-        return null;
+        return Jenkins.getInstance().getExtensionList(ApplicationMessageListener.class);
     }
 }

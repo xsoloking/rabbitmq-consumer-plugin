@@ -163,10 +163,6 @@ public abstract class MessageQueueListener implements ExtensionPoint {
      * @return the extension list.
      */
     public static ExtensionList<MessageQueueListener> all() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins != null) {
-            return jenkins.getExtensionList(MessageQueueListener.class);
-        }
-        return null;
+        return Jenkins.getInstance().getExtensionList(MessageQueueListener.class);
     }
 }
