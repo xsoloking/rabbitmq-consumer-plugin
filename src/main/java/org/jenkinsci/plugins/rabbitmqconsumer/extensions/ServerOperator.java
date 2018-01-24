@@ -27,6 +27,8 @@ public abstract class ServerOperator extends ExtensionPoint {
      *
      * @param controlChannel
      *            the control channel.
+     * @param serviceUri
+     *            the URL to endpoint of service.
      * @throws IOException if ControlRMQChannel has somthing wrong.
      */
     public abstract void OnOpen(Channel controlChannel, String serviceUri) throws IOException;

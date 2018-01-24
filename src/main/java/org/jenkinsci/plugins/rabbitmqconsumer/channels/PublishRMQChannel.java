@@ -152,6 +152,8 @@ public class PublishRMQChannel extends AbstractRMQChannel implements PublishChan
          *
          * @param exchangeName the exchange name.
          * @param queueName the queue name.
+         * @param exchangeType the exchange type.
+         * @param routingKey the routing key.
          */
         public PrepareTask(String exchangeName, String queueName, ExchangeType exchangeType, String routingKey) {
             this.exchangeName = exchangeName;

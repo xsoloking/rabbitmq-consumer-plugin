@@ -37,6 +37,8 @@ public class ReconnectTimer extends AperiodicWork {
      *            the reccurence period in millis.
      * @param stopRequested
      *            true if stop timer is requested.
+     * @param updateChannelRequested
+     *            true if update channel is required.
      */
     public ReconnectTimer(long reccurencePeriod, boolean stopRequested, boolean updateChannelRequested) {
         this.reccurencePeriod = reccurencePeriod;

@@ -30,7 +30,7 @@ public interface PublishChannel {
      * @param routingKey the routing key.
      * @param props the properties of AMQP message.
      * @param body the message body.
-     * @return instance of Future<{@link PublishResult}> class.
+     * @return instance of Future class that computes {@link PublishResult}.
      */
     Future<PublishResult> publish(String exchangeName, String routingKey,
             AMQP.BasicProperties props, byte[] body);
