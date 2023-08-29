@@ -31,7 +31,7 @@ public abstract class ServerOperator extends ExtensionPoint {
      *            the URL to endpoint of service.
      * @throws IOException if ControlRMQChannel has somthing wrong.
      */
-    public abstract void OnOpen(Channel controlChannel, String serviceUri) throws IOException;
+    public abstract void onOpen(Channel controlChannel, String serviceUri) throws IOException;
 
     /**
      * Calls when channel is closed.
@@ -40,7 +40,7 @@ public abstract class ServerOperator extends ExtensionPoint {
      * @param seviceUri
      *            the service URI.
      */
-    public abstract void OnCloseCompleted(String seviceUri);
+    public abstract void onCloseCompleted(String seviceUri);
 
     /**
      * Fires OnOpen event.
@@ -54,7 +54,7 @@ public abstract class ServerOperator extends ExtensionPoint {
             for (ServerOperator l : all()) {
                 try {
                     Channel ch = rmqConnection.getConnection().createChannel();
-                    l.OnOpen(ch, rmqConnection.getServiceUri());
+                    l.onOpen(ch, rmqConnection.getServiceUri());
                     ch.close();
                 } catch (Exception ex) {
                     LOGGER.warn("Caught exception from {}#OnOpen().", l.getClass().getSimpleName());
@@ -73,7 +73,7 @@ public abstract class ServerOperator extends ExtensionPoint {
         LOGGER.trace("ServerOperator", "fireOnCloseCompleted");
         for (ServerOperator l : all()) {
             try {
-                l.OnCloseCompleted(rmqConnection.getServiceUri());
+                l.onCloseCompleted(rmqConnection.getServiceUri());
             } catch (Exception ex) {
                 LOGGER.warn("Caught exception during OnCloseCompleted()", ex);
             }

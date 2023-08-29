@@ -24,6 +24,7 @@ import com.rabbitmq.client.Channel;
  */
 public final class RMQManager implements RMQConnectionListener {
 
+
     /**
      * Intance holder class for {@link RMQManager}.
      *
@@ -38,7 +39,7 @@ public final class RMQManager implements RMQConnectionListener {
 
     private RMQConnection rmqConnection;
     private volatile boolean statusOpen = false;
-    private CountDownLatch closeLatch = null;
+    private volatile CountDownLatch closeLatch;
 
     /**
      * Gets instance.
@@ -124,14 +125,20 @@ public final class RMQManager implements RMQConnectionListener {
     public synchronized void shutdownWithWait() throws InterruptedException {
         if (rmqConnection != null && rmqConnection.isOpen()) {
             try {
-                closeLatch = new CountDownLatch(1);
+                synchronized(this) {
+                    closeLatch = new CountDownLatch(1);
+                }
                 shutdown();
                 if (!closeLatch.await(TIMEOUT_CLOSE, TimeUnit.MILLISECONDS)) {
-                    onCloseCompleted(rmqConnection);
+                    synchronized(this) {
+                        onCloseCompleted(rmqConnection);
+                    }
                     throw new InterruptedException("Wait timeout");
                 }
             } finally {
-                closeLatch = null;
+                synchronized(this) {
+                    closeLatch = null;
+                }
             }
         }
     }
@@ -208,6 +215,9 @@ public final class RMQManager implements RMQConnectionListener {
             ServerOperator.fireOnOpen(rmqConnection);
             rmqConnection.updateChannels(GlobalRabbitmqConfiguration.get().getConsumeItems());
             statusOpen = true;
+            synchronized(this) {
+                closeLatch = new CountDownLatch(1);
+            }
         }
     }
 
@@ -224,8 +234,10 @@ public final class RMQManager implements RMQConnectionListener {
             rmqConnection.removeRMQConnectionListener(this);
             ServerOperator.fireOnCloseCompleted(rmqConnection);
             statusOpen = false;
-            if (closeLatch != null) {
-                closeLatch.countDown();
+            synchronized(this) {
+                if (closeLatch != null) {
+                    closeLatch.countDown();
+                }
             }
         }
     }

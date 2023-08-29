@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.rabbitmqconsumer.channels;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeoutException;
 
 import org.jenkinsci.plugins.rabbitmqconsumer.RMQState;
 import org.jenkinsci.plugins.rabbitmqconsumer.events.RMQChannelEvent;
@@ -93,6 +94,14 @@ public abstract class AbstractRMQChannel implements RMQChannelNotifier, Shutdown
                         channel = null;
                     }
                     throw ex;
+                } catch (TimeoutException e) {
+                    LOGGER.warn("Failed to close channel.");
+                    if (!(e.getCause() instanceof ShutdownSignalException)) {
+                        state = RMQState.DISCONNECTED;
+                        notifyOnCloseCompleted();
+                        channel = null;
+                    }
+                    throw new RuntimeException(e);
                 }
             }
         } else {

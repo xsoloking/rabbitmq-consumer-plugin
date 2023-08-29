@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>3.2</version><!-- which version of Jenkins is this plugin built against? -->
+    <version>4.72</version><!-- which version of Jenkins is this plugin built against? -->
     <relativePath />
   </parent>
 
@@ -35,9 +35,9 @@
 
   <properties>
     <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-    <jenkins.version>2.7.1</jenkins.version>
+    <jenkins.version>2.361.4</jenkins.version>
     <!-- Java Level to use. Java 7 required when using core >= 1.612 -->
-    <java.level>7</java.level>
+<!--    <java.level>17</java.level>-->
     <!-- Jenkins Test Harness version you use to test the plugin. -->
     <!-- For Jenkins version >= 1.580.1 use JTH 2.x or higher. -->
     <!-- <jenkins-test-harness.version>2.13</jenkins-test-harness.version> -->
@@ -45,11 +45,11 @@
         ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
         ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
     -->
-    <jmockit.version>1.38</jmockit.version>
-    <amqp.client.version>3.4.1</amqp.client.version>
-    <commons.validator.version>1.6</commons.validator.version>
+    <jmockit.version>1.49</jmockit.version>
+    <amqp.client.version>5.18.0</amqp.client.version>
+    <commons.validator.version>1.7</commons.validator.version>
     <commons.digester.version>2.1</commons.digester.version>
-    <commons.lang3.version>3.7</commons.lang3.version>
+    <commons.lang3.version>3.12.0</commons.lang3.version>
   </properties>
 
   <dependencies>
@@ -82,7 +82,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4jVersion}</version>
     </dependency>
   </dependencies>
 
@@ -92,8 +91,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>17</source>
+          <target>17</target>
         </configuration>
       </plugin>
       <plugin>

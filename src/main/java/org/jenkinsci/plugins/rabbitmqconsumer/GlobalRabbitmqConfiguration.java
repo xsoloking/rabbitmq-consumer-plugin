@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 
@@ -295,6 +296,8 @@ public final class GlobalRabbitmqConfiguration extends GlobalConfiguration {
                 return FormValidation.error(Messages.AuthFailure());
             } catch (IOException e) {
                 return FormValidation.error(Messages.Error() + ": " + e);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
             }
         }
         return FormValidation.error(Messages.InvalidURI());

@@ -137,12 +137,12 @@ public class Mocks {
     public static final class ServerOperatorMock extends ServerOperator {
 
         @Override
-        public void OnOpen(Channel controlChannel, String serviceUri) {
+        public void onOpen(Channel controlChannel, String serviceUri) {
             LOGGER.info(MessageFormat.format("Open control channel {0} for {1}.", controlChannel.getChannelNumber(), serviceUri));
         }
 
         @Override
-        public void OnCloseCompleted(String serviceUri) {
+        public void onCloseCompleted(String serviceUri) {
             LOGGER.info(MessageFormat.format("Closed connection for {0}.", serviceUri));
         }
     }
@@ -187,7 +187,7 @@ public class Mocks {
                 for (ServerOperator l : operatorSet) {
                     try {
                         Channel ch = rmqConnection.getConnection().createChannel();
-                        l.OnOpen(ch, rmqConnection.getServiceUri());
+                        l.onOpen(ch, rmqConnection.getServiceUri());
                         ch.close();
                     } catch (Exception ex) {
                         LOGGER.warning("Caught exception from OnOpen().");
@@ -200,7 +200,7 @@ public class Mocks {
     public static final class OnCloseCompletedDelegation implements Delegate<ServerOperator> {
         void fireOnCloseCompleted(RMQConnection rmqConnection) throws IOException {
             for (ServerOperator l : operatorSet) {
-                l.OnCloseCompleted(rmqConnection.getServiceUri());
+                l.onCloseCompleted(rmqConnection.getServiceUri());
             }
         }
     }
